@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": ["next/types", "./src/types/next"],
     "plugins": [
       {
         "name": "next"

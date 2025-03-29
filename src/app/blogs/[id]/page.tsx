@@ -13,35 +13,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { deletePost, getUser } from "@/libs/actions";
 import type { Metadata, ResolvingMetadata } from "next";
 
-interface BlogPageParams {
-  id: string;
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: BlogPageParams;
-}): Promise<Metadata> {
-  const blog = await getBlogById(Number(params.id));
-
-  return {
-    title: blog?.title || "Blog Post",
-    description: blog?.content.substring(0, 160) || "Blog post details",
-    openGraph: {
-      images: blog?.imagePath ? [{ url: blog.imagePath }] : [],
-    },
-  };
-}
-
 export default async function BlogDetailPage({
   params,
 }: {
-  params: BlogPageParams;
+  params: Promise<{ id: string }>;
 }) {
-  const [blog, user] = await Promise.all([
-    getBlogById(Number(params.id)),
-    getUser(),
-  ]);
+  const { id } = await params;
+  const blog = await getBlogById(Number(id));
+  const user = await getUser();
 
   if (!blog) {
     return (
