@@ -5,7 +5,7 @@ interface Config {
 }
 
 export const config: Config = {
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000" || "",
+  apiUrl: process.env.NEXT_PUBLIC_API_URL || "",
   googleClientId: process.env.GOOGLE_CLIENT_ID || "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
 };
