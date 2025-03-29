@@ -1,92 +1,128 @@
 import {
-  Avatar,
   Box,
-  Chip,
   Container,
-  Divider,
-  IconButton,
   Typography,
+  Divider,
+  Avatar,
+  Chip,
+  IconButton,
 } from "@mui/material";
 import { getBlogById } from "../actions";
 import CommentSections from "@/components/CommentSections";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deletePost, getUser } from "@/libs/actions";
+import type { Metadata, ResolvingMetadata } from "next";
 
-interface Props {
-  params: {
-    id: string;
+interface BlogPageParams {
+  id: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: BlogPageParams;
+}): Promise<Metadata> {
+  const blog = await getBlogById(Number(params.id));
+
+  return {
+    title: blog?.title || "Blog Post",
+    description: blog?.content.substring(0, 160) || "Blog post details",
+    openGraph: {
+      images: blog?.imagePath ? [{ url: blog.imagePath }] : [],
+    },
   };
 }
 
-export default async function BlogDetail({ params }: Props) {
-  const { id } = await params;
-  const blog = await getBlogById(Number(id));
-  const user = await getUser();
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: BlogPageParams;
+}) {
+  const [blog, user] = await Promise.all([
+    getBlogById(Number(params.id)),
+    getUser(),
+  ]);
 
   if (!blog) {
-    return <Box>Blog not found</Box>;
+    return (
+      <Container sx={{ py: 4, textAlign: "center" }}>
+        <Typography variant='h4'>Blog not found</Typography>
+      </Container>
+    );
   }
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}>
-      <Container component={"main"} sx={{ flexGrow: 1, py: 4 }}>
-        <Typography sx={{ mb: 2 }} variant='h4' gutterBottom>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <Container component='main' sx={{ flexGrow: 1, py: 4 }}>
+        <Typography sx={{ mb: 2 }} variant='h3' component='h1' gutterBottom>
           {blog.title}
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              mb: 2,
+              gap: 2,
               flexWrap: "wrap",
             }}>
-            <Avatar sx={{ mr: 2 }}>{blog.author.name[0]}</Avatar>
-            <Typography sx={{ mr: 2 }} variant='subtitle1'>
-              {blog.author.name}
-            </Typography>
-            <Typography
-              variant='subtitle2'
-              color='text.secondary'
-              sx={{ mr: 2 }}>
-              {blog.createdAt.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Typography>
-            <Chip label={blog.category.name} />
-            {user?.email === blog.author.email ? (
-              <Box
-                component={"form"}
-                action={deletePost}
-                sx={{ display: "flex", ml: "auto" }}>
-                <IconButton aria-label='delete' type='submit'>
-                  <DeleteIcon sx={{ color: "red", fontSize: "2rem" }} />
-                  <input type='hidden' name='id' value={blog.id} />
-                </IconButton>
-              </Box>
-            ) : null}
+            <Avatar src={blog.author.name} alt={blog.author.name}>
+              {blog.author.name[0]}
+            </Avatar>
+            <Box>
+              <Typography variant='subtitle1'>{blog.author.name}</Typography>
+              <Typography variant='subtitle2' color='text.secondary'>
+                {blog.createdAt.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </Typography>
+            </Box>
+            <Chip label={blog.category.name} color='primary' />
           </Box>
+
+          {user?.email === blog.author.email && (
+            <Box component='form' action={deletePost}>
+              <IconButton aria-label='delete' type='submit' color='error'>
+                <DeleteIcon sx={{ fontSize: "2rem" }} />
+                <input type='hidden' name='id' value={blog.id} />
+              </IconButton>
+            </Box>
+          )}
         </Box>
-        <Box>
-          <Box>
+
+        {blog.imagePath && (
+          <Box sx={{ mb: 4, borderRadius: 2, overflow: "hidden" }}>
             <img
-              src={blog.imagePath as string}
+              src={blog.imagePath}
               alt={blog.title}
-              style={{ maxWidth: "100%", height: "auto" }}
+              style={{
+                width: "100%",
+                height: "auto",
+                maxHeight: "500px",
+                objectFit: "cover",
+              }}
             />
-            <Typography variant='body1' sx={{ whiteSpace: "pre-wrap" }}>
-              {blog.content}
-            </Typography>
           </Box>
-          <Divider sx={{ my: 2 }} />
-          <CommentSections postId={blog.id} userId={blog.author.id} />
-        </Box>
+        )}
+
+        <Typography
+          variant='body1'
+          component='article'
+          sx={{ whiteSpace: "pre-wrap", mb: 4 }}>
+          {blog.content}
+        </Typography>
+
+        <Divider sx={{ my: 4 }} />
+
+        <CommentSections postId={blog.id} userId={blog.authorId} />
       </Container>
     </Box>
   );

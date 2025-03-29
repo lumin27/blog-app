@@ -229,7 +229,7 @@ const CommentSections = ({ postId, userId }: Props) => {
         </Stack>
       </Paper>
       {newComment ? (
-        <Card sx={{ mb: 4, borderRadius: "3gi0px" }}>
+        <Card sx={{ mb: 4, borderRadius: "30px" }}>
           <CardContent>
             <Box
               component={"form"}
