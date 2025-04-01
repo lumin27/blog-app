@@ -2,10 +2,11 @@ import BlogClient from "@/components/BlogClient";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { getPosts } from "@/libs/actions";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
+import { Suspense } from "react";
 
 export default async function BlogsPage() {
-  const posts = await getPosts();
+  const postPromise = getPosts();
   return (
     <Box>
       <Header />
@@ -16,9 +17,16 @@ export default async function BlogsPage() {
           minHeight: "100vh",
           mt: "80px",
         }}>
-        <BlogClient posts={posts} />
+        <Suspense fallback={<CircularProgress sx={{ alignSelf: "center" }} />}>
+          <BlogContent postsPromise={postPromise} />
+        </Suspense>
       </Box>
       <Footer />
     </Box>
   );
+}
+
+async function BlogContent({ postsPromise }: { postsPromise: Promise<any> }) {
+  const posts = await postsPromise;
+  return <BlogClient posts={posts} />;
 }

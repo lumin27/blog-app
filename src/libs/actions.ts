@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import cloudinary from "./cloudinary";
 import { ReactionType } from "@prisma/client";
+import { error } from "console";
 
 export async function getPosts() {
   return await prisma.post.findMany({
@@ -64,6 +65,10 @@ export async function createPost(formData: FormData) {
   const content = formData.get("content") as string;
   const categoryId = formData.get("categoryId");
   const file = formData.get("image") as File | null;
+
+  if (!categoryId) {
+    return;
+  }
 
   let imageUrl =
     "https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg";

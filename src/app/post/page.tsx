@@ -95,6 +95,7 @@ export default function BlogForm() {
             </Typography>
             <FormControl fullWidth>
               <Select
+                required
                 value={categoryId || ""}
                 name='categoryId'
                 onChange={(e) => setCategoryId(e.target.value)}
@@ -128,7 +129,7 @@ export default function BlogForm() {
                   backgroundColor: "#7b5fa5",
                 },
               }}>
-              {loading ? "Uploading..." : "Create Post"}
+              {loading && categoryId ? "Uploading..." : "Create Post"}
             </Button>
           </Box>
         </Paper>

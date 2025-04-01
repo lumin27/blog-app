@@ -22,6 +22,7 @@ interface Props {
 }
 
 export default function BlogPostCard({ post }: Props) {
+  const [loading, setLoading] = useState(false);
   const { title, content, author, category } = post;
   const [onHover, setOnHover] = useState(false);
   const theme = useTheme();
@@ -112,8 +113,12 @@ export default function BlogPostCard({ post }: Props) {
             {post.reaction.length || ""}
           </Typography>
         </Typography>
-        <Button size='small' component={Link} href={`/blogs/${post.id}`}>
-          Read More
+        <Button
+          size='small'
+          component={Link}
+          href={`/blogs/${post.id}`}
+          onClick={() => setLoading(true)}>
+          {loading ? "Loading..." : "Read More"}
         </Button>
       </CardActions>
     </Card>
