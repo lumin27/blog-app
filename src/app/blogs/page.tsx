@@ -6,7 +6,7 @@ import { Box, CircularProgress } from "@mui/material";
 import { Suspense } from "react";
 
 export default async function BlogsPage() {
-  const postPromise = getPosts();
+  const posts = await getPosts();
   return (
     <Box>
       <Header />
@@ -18,15 +18,10 @@ export default async function BlogsPage() {
           mt: "80px",
         }}>
         <Suspense fallback={<CircularProgress sx={{ alignSelf: "center" }} />}>
-          <BlogContent postsPromise={postPromise} />
+          <BlogClient posts={posts} />{" "}
         </Suspense>
       </Box>
       <Footer />
     </Box>
   );
-}
-
-async function BlogContent({ postsPromise }: { postsPromise: Promise<any> }) {
-  const posts = await postsPromise;
-  return <BlogClient posts={posts} />;
 }

@@ -11,7 +11,6 @@ import { getBlogById } from "../actions";
 import CommentSections from "@/components/CommentSections";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deletePost, getUser } from "@/libs/actions";
-import type { Metadata, ResolvingMetadata } from "next";
 
 export default async function BlogDetailPage({
   params,
