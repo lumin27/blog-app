@@ -72,6 +72,7 @@ const CommentSections = ({ postId, userId }: Props) => {
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -68,7 +68,7 @@ export default function BlogsPage() {
                   <Skeleton
                     variant='rectangular'
                     width='100%'
-                    height={isMobile ? 500 : 470}
+                    height={isMobile ? 400 : 470}
                   />
                   <Skeleton variant='text' width='80%' height={35} />
                   <Skeleton variant='text' width='60%' height={30} />
