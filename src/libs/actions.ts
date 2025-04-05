@@ -9,7 +9,7 @@ import { ReactionType } from "@prisma/client";
 import { error } from "console";
 
 export async function getPosts() {
-  return await prisma.post.findMany({
+  const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: "desc",
     },
@@ -24,6 +24,8 @@ export async function getPosts() {
       reaction: true,
     },
   });
+  if (!posts) return redirect("/blogs");
+  return posts;
 }
 
 // User Sate
@@ -117,6 +119,7 @@ export async function deletePost(formData: FormData) {
       id: Number(id),
     },
   });
+  revalidatePath("/blogs");
   redirect("/blogs");
 }
 
