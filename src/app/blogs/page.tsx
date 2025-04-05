@@ -7,6 +7,7 @@ import { Suspense } from "react";
 
 export default async function BlogsPage() {
   const posts = await getPosts();
+
   return (
     <Box>
       <Header />
