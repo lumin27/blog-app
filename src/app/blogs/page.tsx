@@ -39,12 +39,19 @@ export default function BlogsPage() {
           mt: "80px",
         }}>
         {loading ? (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+              mt: isMobile ? 0 : 2,
+              ml: isMobile ? 0 : 7,
+            }}>
             <Skeleton
               variant='text'
               height={50}
               width='50%'
-              sx={{ ml: isMobile ? 2 : 4 }}
+              sx={{ ml: isMobile ? 2 : 5 }}
             />
             <Box
               sx={{
@@ -52,11 +59,17 @@ export default function BlogsPage() {
                 flexWrap: "wrap",
                 gap: 2,
                 px: 2,
-                ml: isMobile ? 0 : 4,
+                ml: isMobile ? 0 : 4.5,
               }}>
               {[...Array(4)].map((_, index) => (
-                <Box key={index} sx={{ width: isMobile ? "100%" : "30%" }}>
-                  <Skeleton variant='rectangular' width='100%' height={380} />
+                <Box
+                  key={index}
+                  sx={{ width: isMobile ? "100%" : "28%", mt: 1 }}>
+                  <Skeleton
+                    variant='rectangular'
+                    width='100%'
+                    height={isMobile ? 500 : 470}
+                  />
                   <Skeleton variant='text' width='80%' height={35} />
                   <Skeleton variant='text' width='60%' height={30} />
                 </Box>

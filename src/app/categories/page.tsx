@@ -4,7 +4,15 @@ import BlogPostCard from "@/components/BlogPostCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { getCategories, getPosts } from "@/libs/actions";
-import { Box, Chip, Stack, Typography, Skeleton } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Stack,
+  Typography,
+  Skeleton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface CategoryProps {
@@ -17,6 +25,8 @@ const Categories = () => {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const filteredPosts = selectedCategory
     ? posts.filter((post) => post.category.name === selectedCategory)
@@ -81,20 +91,14 @@ const Categories = () => {
         {loading ? (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 2 }}>
             {[...Array(4)].map((_, index) => (
-              <Box
-                key={index}
-                sx={{
-                  width: { xs: "100%", sm: "48%", md: "23%" },
-                  mt: 2,
-                }}>
-                <Skeleton variant='rectangular' width='100%' height={400} />
+              <Box key={index} sx={{ width: isMobile ? "100%" : "28%", mt: 1 }}>
                 <Skeleton
-                  variant='text'
-                  width='80%'
-                  height={20}
-                  sx={{ mt: 1 }}
+                  variant='rectangular'
+                  width='100%'
+                  height={isMobile ? 500 : 470}
                 />
-                <Skeleton variant='text' width='60%' height={20} />
+                <Skeleton variant='text' width='80%' height={35} />
+                <Skeleton variant='text' width='60%' height={30} />
               </Box>
             ))}
           </Box>

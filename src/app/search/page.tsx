@@ -2,7 +2,15 @@
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { Box, InputAdornment, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  InputAdornment,
+  Skeleton,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React, { useEffect, useState, useTransition } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Post } from "@prisma/client";
@@ -14,12 +22,16 @@ const SearchPage = () => {
   const [searchedPosts, setSearchedPosts] = useState<Post[]>([]);
   const [isPending, startTransition] = useTransition();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const dbposts = await getPosts();
         setPosts(dbposts);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -76,28 +88,41 @@ const SearchPage = () => {
           }}>
           Search Any Blog Post Here
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
-          <TextField
-            sx={{ width: "80%" }}
-            value={query}
-            label='Search Blog Post'
-            variant='outlined'
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            disabled={isPending}
-            InputProps={{
-              endAdornment: query && (
-                <InputAdornment position='end'>
-                  <CloseIcon
-                    sx={{ cursor: "pointer" }}
-                    onClick={handleClear}
-                    aria-label='clear search'
-                  />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+        {loading ? (
+          <Typography
+            variant='h6'
+            sx={{
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "#1D3557",
+              mt: 6,
+            }}>
+            Loading...
+          </Typography>
+        ) : (
+          <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+            <TextField
+              sx={{ width: "80%" }}
+              value={query}
+              label='Search Blog Post'
+              variant='outlined'
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              disabled={isPending}
+              InputProps={{
+                endAdornment: query && (
+                  <InputAdornment position='end'>
+                    <CloseIcon
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleClear}
+                      aria-label='clear search'
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        )}
         <Box display='flex' flexWrap='wrap' justifyContent='center'>
           {searchedPosts.length > 0
             ? searchedPosts.map((post) => (

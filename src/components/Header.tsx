@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { getUser } from "@/libs/actions";
 
 const Header = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -18,10 +18,6 @@ const Header = () => {
 
     fetchUser();
   }, []);
-
-  if (user === null) {
-    return null;
-  }
 
   const isAuthenticated = user && user.email;
 
@@ -40,33 +36,30 @@ const Header = () => {
         top: 0,
         zIndex: 100,
       }}>
-      <Box
-        sx={{
-          display: "flex",
-          gap: "100px",
-        }}>
+      <Box sx={{ display: "flex", gap: "100px" }}>
         <Typography variant='h4' fontWeight='bold'>
           BlogApp
         </Typography>
         <TopbarItems />
       </Box>
+
       <Box sx={{ display: "flex", gap: "20px" }}>
-        {isAuthenticated ? (
-          <Link href='/post'>
+        {user === null ? null : isAuthenticated ? (
+          <>
+            <Link href='/post'>
+              <Button
+                variant='contained'
+                sx={{ color: "#F1FAEE", bgcolor: "#5c3c92" }}>
+                Create
+              </Button>
+            </Link>
             <Button
+              sx={{ color: "#F1FAEE", bgcolor: "#5c3c92" }}
               variant='contained'
-              sx={{ color: "#F1FAEE", bgcolor: "#5c3c92" }}>
-              Create
+              onClick={() => signOut({ callbackUrl: "/blogs" })}>
+              Logout
             </Button>
-          </Link>
-        ) : null}
-        {isAuthenticated ? (
-          <Button
-            sx={{ color: "#F1FAEE", bgcolor: "#5c3c92" }}
-            variant='contained'
-            onClick={() => signOut({ callbackUrl: "/blogs" })}>
-            logout
-          </Button>
+          </>
         ) : (
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Typography mr={2}>Create An Account</Typography>
@@ -74,7 +67,7 @@ const Header = () => {
               <Button
                 variant='contained'
                 sx={{ color: "#F1FAEE", bgcolor: "#5c3c92", mr: 2 }}>
-                LogI n
+                Log In
               </Button>
             </Link>
           </Box>

@@ -69,11 +69,13 @@ export default function BlogPostCard({ post }: Props) {
           <Chip
             label={category.name}
             sx={{
+              scale: 0.8,
               position: "absolute",
-              top: 8,
-              right: 8,
-              bgcolor: "#1D3557",
-              color: "white",
+              top: 5,
+              right: 4,
+              border: "1px solid #1D3557",
+              bgcolor: "white",
+              color: "#1D3557",
             }}
           />
         )}
