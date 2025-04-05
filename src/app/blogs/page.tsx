@@ -40,14 +40,19 @@ export default function BlogsPage() {
         }}>
         {loading ? (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Skeleton variant='text' height={50} width='50%' sx={{ ml: 4 }} />
+            <Skeleton
+              variant='text'
+              height={50}
+              width='50%'
+              sx={{ ml: isMobile ? 2 : 4 }}
+            />
             <Box
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
                 gap: 2,
                 px: 2,
-                ml: 3,
+                ml: isMobile ? 0 : 4,
               }}>
               {[...Array(4)].map((_, index) => (
                 <Box key={index} sx={{ width: isMobile ? "100%" : "30%" }}>

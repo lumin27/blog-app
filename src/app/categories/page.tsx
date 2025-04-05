@@ -53,7 +53,11 @@ const Categories = () => {
         </Typography>
 
         {loading ? (
-          <Skeleton variant='text' width={100} height={40} />
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            <Skeleton variant='text' width={100} height={40} />
+            <Skeleton variant='text' width={100} height={40} />
+            <Skeleton variant='text' width={100} height={40} />
+          </Box>
         ) : (
           <Stack direction='row' flexWrap='wrap' gap={1}>
             <Chip
