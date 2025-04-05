@@ -4,14 +4,7 @@ import BlogPostCard from "@/components/BlogPostCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { getCategories, getPosts } from "@/libs/actions";
-import {
-  Box,
-  Chip,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Chip, Stack, Typography, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface CategoryProps {
@@ -23,23 +16,28 @@ const Categories = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoryProps[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const filteredPosts = selectedCategory
     ? posts.filter((post) => post.category.name === selectedCategory)
     : posts;
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const dbposts = await getPosts();
+        const dbPosts = await getPosts();
         const dbCategories = await getCategories();
-        setPosts(dbposts);
+        setPosts(dbPosts);
         setCategories(dbCategories);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
+        setLoading(false);
       }
     };
     fetchCategories();
   }, []);
+
   return (
     <Box
       sx={{
@@ -53,22 +51,50 @@ const Categories = () => {
         <Typography variant='h4' gutterBottom sx={{ fontWeight: "bold" }}>
           Latest Blog Posts
         </Typography>
-        <Stack direction='row' flexWrap='wrap' gap={1}>
-          <Chip
-            label='All'
-            onClick={() => setSelectedCategory(null)}
-            color={selectedCategory === null ? "primary" : "default"}
-          />
-          {categories.map((category) => (
+
+        {loading ? (
+          <Skeleton variant='text' width={100} height={40} />
+        ) : (
+          <Stack direction='row' flexWrap='wrap' gap={1}>
             <Chip
-              key={category.id}
-              label={category.name}
-              onClick={() => setSelectedCategory(category.name)}
-              color={selectedCategory === category.name ? "primary" : "default"}
+              label='All'
+              onClick={() => setSelectedCategory(null)}
+              color={selectedCategory === null ? "primary" : "default"}
             />
-          ))}
-        </Stack>
-        {filteredPosts.length > 0 ? (
+            {categories.map((category) => (
+              <Chip
+                key={category.id}
+                label={category.name}
+                onClick={() => setSelectedCategory(category.name)}
+                color={
+                  selectedCategory === category.name ? "primary" : "default"
+                }
+              />
+            ))}
+          </Stack>
+        )}
+
+        {loading ? (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 2 }}>
+            {[...Array(4)].map((_, index) => (
+              <Box
+                key={index}
+                sx={{
+                  width: { xs: "100%", sm: "48%", md: "23%" },
+                  mt: 2,
+                }}>
+                <Skeleton variant='rectangular' width='100%' height={400} />
+                <Skeleton
+                  variant='text'
+                  width='80%'
+                  height={20}
+                  sx={{ mt: 1 }}
+                />
+                <Skeleton variant='text' width='60%' height={20} />
+              </Box>
+            ))}
+          </Box>
+        ) : filteredPosts.length > 0 ? (
           <Box
             display='flex'
             flexWrap='wrap'
